@@ -1,0 +1,39 @@
+/* Categories main wrapper */
+.categories-page {
+  padding: 50px 0;
+}
+
+/* Category card */
+.category-card {
+  display: block;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  padding: 50px 20px;
+  text-align: center;
+  text-decoration: none;
+  transition: all 0.3s ease-in-out;
+  color: #1b1b1b;
+}
+
+.category-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+}
+
+.category-card h3 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #ffb400; /* accent color for furniture brand */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .category-card {
+    padding: 30px 15px;
+  }
+
+  .category-card h3 {
+    font-size: 20px;
+  }
+}

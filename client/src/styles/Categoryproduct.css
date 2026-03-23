@@ -1,0 +1,90 @@
+/* Category Page Container */
+.category-page {
+  padding-bottom: 50px;
+}
+
+/* Category Title */
+.category-title {
+  color: #ffb400; /* Accent color */
+  font-weight: 700;
+  margin-bottom: 5px;
+}
+
+.category-count {
+  color: #555;
+  margin-bottom: 20px;
+}
+
+/* Product Card */
+.product-card {
+  width: 18rem;
+  border-radius: 12px;
+  overflow: hidden;
+  background-color: #f7f7f7;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease-in-out;
+}
+
+.product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+}
+
+.product-img {
+  height: 250px;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.product-img:hover {
+  transform: scale(1.05);
+}
+
+/* Card Body */
+.product-card .card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.card-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+}
+
+.card-text {
+  font-size: 14px;
+  color: #555;
+}
+
+.card-price {
+  color: #28a745;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.product-card .btn {
+  border-radius: 0;
+  font-weight: 600;
+  font-size: 14px;
+  transition: 0.3s;
+}
+
+.product-card .btn-primary:hover {
+  background-color: #ffb400;
+  border-color: #ffb400;
+}
+
+.product-card .btn-secondary:hover {
+  background-color: #333;
+  border-color: #333;
+  color: #fff;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .product-card {
+    width: 100%;
+  }
+}

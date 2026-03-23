@@ -1,0 +1,35 @@
+/* UserMenu.css */
+.list-group {
+  background-color: #1b1b1b; /* dark sidebar */
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.list-group h4 {
+  color: #ffb400;
+  margin-bottom: 20px;
+  font-weight: 700;
+  font-size: 20px;
+}
+
+.list-group-item {
+  background-color: #2c2c2c;
+  color: #fff;
+  margin-bottom: 10px;
+  border: none;
+  border-radius: 5px;
+  transition: all 0.3s ease;
+}
+
+.list-group-item:hover {
+  background-color: #ffb400;
+  color: #000;
+  transform: translateX(5px);
+  font-weight: bold;
+}
+
+.list-group-item.active {
+  background-color: #ffb400;
+  color: #000;
+  font-weight: bold;
+}

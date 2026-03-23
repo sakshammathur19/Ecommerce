@@ -1,0 +1,99 @@
+/* About.css */
+
+.about-page {
+  font-family: "Arial", sans-serif;
+  color: #333;
+}
+
+/* Header */
+.about-header h1 {
+  font-size: 3rem;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.about-header .lead {
+  font-size: 1.2rem;
+  color: #555;
+  margin-top: 10px;
+}
+
+/* Content Section */
+.about-content h2 {
+  font-weight: 600;
+  color: #222;
+  margin-bottom: 15px;
+}
+
+.about-content p {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #555;
+  margin-bottom: 20px;
+}
+
+.about-img {
+  width: 100%;
+  border-radius: 15px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.about-img:hover {
+  transform: scale(1.05);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+}
+
+/* List */
+.about-list {
+  list-style: none;
+  padding-left: 0;
+}
+
+.about-list li {
+  position: relative;
+  padding-left: 25px;
+  margin-bottom: 10px;
+  font-weight: 500;
+  color: #444;
+}
+
+.about-list li::before {
+  content: "✔";
+  position: absolute;
+  left: 0;
+  color: #27ae60;
+}
+
+/* Call-to-action */
+.about-cta {
+  background: #f7f7f7;
+  padding: 40px 20px;
+  border-radius: 15px;
+}
+
+.about-cta h3 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 15px;
+}
+
+.about-cta p {
+  font-size: 1.1rem;
+  margin-bottom: 25px;
+}
+
+.btn-explore {
+  background-color: #27ae60;
+  color: #fff;
+  padding: 12px 25px;
+  font-weight: 600;
+  font-size: 1rem;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.btn-explore:hover {
+  background-color: #1e8449;
+  transform: scale(1.05);
+}

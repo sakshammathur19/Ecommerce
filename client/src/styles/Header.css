@@ -1,0 +1,110 @@
+/* Navbar background */
+.navbar {
+  background-color: #1b1b1b !important; /* dark background */
+  padding: 15px 30px;
+  font-family: "Poppins", sans-serif;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+/* Brand styling */
+.navbar-brand {
+  color: #ffb400 !important; /* accent color */
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.navbar-brand:hover {
+  color: #fff !important;
+  transform: scale(1.05);
+  transition: 0.3s;
+}
+
+/* Nav links */
+.navbar-nav .nav-link {
+  color: #fff !important;
+  font-weight: 500;
+  margin-right: 15px;
+  transition: 0.3s;
+}
+
+.navbar-nav .nav-link:hover {
+  color: #ffb400 !important;
+  transform: scale(1.05);
+}
+
+/* Dropdown menu */
+.dropdown-menu {
+  background-color: #1b1b1b;
+  border: none;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.dropdown-item {
+  color: #fff !important;
+  transition: 0.3s;
+}
+
+.dropdown-item:hover {
+  color: #ffb400 !important;
+  background-color: rgba(255, 180, 0, 0.1);
+}
+
+/* Cart badge */
+.ant-badge-count {
+  background-color: #ffb400;
+  color: #1b1b1b;
+  font-weight: bold;
+}
+
+/* Search input */
+.form-control {
+  border-radius: 20px;
+  padding-left: 15px;
+  border: none;
+}
+
+.form-control:focus {
+  box-shadow: none;
+  border-color: #ffb400;
+}
+
+/* Responsive navbar toggler */
+.navbar-toggler {
+  border: none;
+  outline: none;
+}
+
+.navbar-toggler-icon {
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba%28255,180,0,1%29' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+}
+.navbar-nav .cart-link {
+  font-weight: 500;
+  font-size: 16px;
+  color: #1b1b1b; /* same as other nav links */
+  text-decoration: none;
+  transition:
+    color 0.3s,
+    transform 0.2s;
+}
+
+.navbar-nav .cart-link:hover {
+  color: #ffb400; /* accent color on hover */
+  transform: scale(1.05);
+}
+
+/* Badge styling to match theme */
+.navbar-nav .cart-link .ant-badge-count {
+  background-color: #ffb400; /* golden accent */
+  color: #1b1b1b;
+  font-weight: bold;
+  font-size: 12px;
+  min-width: 20px;
+  height: 20px;
+  line-height: 20px;
+  border-radius: 50%;
+  margin-left: 5px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}

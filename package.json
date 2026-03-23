@@ -1,0 +1,44 @@
+{
+  "name": "ecommerce",
+  "proxy": "http://localhost:8080",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "server": "nodemon server.js",
+    "client": "npm start --prefix client",
+    "dev": "concurrently \"npm run start\" \"npm run client\""
+  },
+  "keywords": [],
+  "author": "Saksham Mathur",
+  "license": "MLT",
+  "dependencies": {
+    "@tailwindcss/vite": "^4.2.2",
+    "bcrypt": "^6.0.0",
+    "braintree": "^3.36.0",
+    "braintree-web": "^3.138.0",
+    "braintree-web-drop-in": "^1.46.0",
+    "braintree-web-drop-in-react": "^1.2.1",
+    "colors": "^1.4.0",
+    "concurrently": "^9.2.1",
+    "cors": "^2.8.6",
+    "dotenv": "^17.3.1",
+    "express": "^4.18.2",
+    "express-formidable": "^1.2.0",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.2.1",
+    "morgan": "^1.10.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "slugify": "^1.6.8"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.27",
+    "nodemon": "^3.1.14",
+    "postcss": "^8.5.8",
+    "tailwindcss": "^4.2.2"
+  }
+  
+}

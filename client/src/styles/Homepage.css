@@ -1,0 +1,82 @@
+/* Products */
+.products-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+/* Individual Card */
+.product-card {
+  width: 18rem;
+  display: flex;
+  flex-direction: column;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+/* Hover effect */
+.product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* Image */
+.product-img {
+  height: 200px; /* fixed height */
+  object-fit: cover;
+  width: 100%;
+  transition: transform 0.3s ease;
+}
+
+.product-img:hover {
+  transform: scale(1.05);
+}
+
+/* Card Body */
+.card-body {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  padding: 10px;
+}
+
+/* Title */
+.card-title {
+  font-weight: 600;
+  font-size: 18px;
+  margin-bottom: 5px;
+  min-height: 50px; /* keeps all titles aligned */
+}
+
+/* Description */
+.card-text {
+  color: #666;
+  font-size: 14px;
+  flex-grow: 1; /* pushes buttons to bottom */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* limits to 2 lines */
+  -webkit-box-orient: vertical;
+}
+
+/* Price */
+.card-price {
+  font-weight: bold;
+  color: #27ae60;
+  font-size: 16px;
+  margin: 5px 0;
+}
+
+/* Buttons */
+.btn-primary,
+.btn-secondary {
+  width: 100%;
+  border-radius: 5px;
+  padding: 8px 0;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  margin-top: 5px; /* space between buttons */
+}
