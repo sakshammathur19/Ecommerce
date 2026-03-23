@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import Layout from "../../components/layout/Layout";
 import AdminMenu from "../../components/layout/AdminMenu";
 import axios from "axios";
@@ -9,19 +9,19 @@ import { Select } from "antd";
 const { Option } = Select;
 
 const AdminOrders = () => {
-  const [status, setStatus] = useState([
+  const [status] = useState([
     "Not Process",
     "Processing",
     "Shipped",
-    "deliverd",
-    "cancel",
+    "Delivered",
+    "Cancel",
   ]);
 
   const [orders, setOrders] = useState([]);
   const [auth] = useAuth();
 
-  // 🔥 GET ORDERS
-  const getOrders = async () => {
+  // ✅ FIXED: useCallback added
+  const getOrders = useCallback(async () => {
     try {
       const { data } = await axios.get("/api/v1/auth/all-orders", {
         headers: {
@@ -35,11 +35,12 @@ const AdminOrders = () => {
     } catch (error) {
       console.log("ERROR IN GET ORDERS:", error);
     }
-  };
+  }, [auth?.token]);
 
+  // ✅ FIXED: dependency added safely
   useEffect(() => {
     if (auth?.token) getOrders();
-  }, [auth?.token]);
+  }, [auth?.token, getOrders]);
 
   // 🔥 HANDLE STATUS CHANGE
   const handleChange = async (value, orderId) => {
@@ -51,7 +52,7 @@ const AdminOrders = () => {
           headers: {
             Authorization: `Bearer ${auth?.token}`,
           },
-        },
+        }
       );
 
       getOrders(); // refresh
@@ -121,7 +122,7 @@ const AdminOrders = () => {
                 {/* PRODUCTS */}
                 <div className="container">
                   {o?.products?.map((p) => (
-                    <div className="row mb-2 p-2 card flex-row" key={p._id + i}>
+                    <div className="row mb-2 p-2 card flex-row" key={p._id}>
                       <div className="col-md-4">
                         <img
                           src={`/api/v1/product/product-photo/${p._id}`}
