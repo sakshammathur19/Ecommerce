@@ -10,6 +10,8 @@ import cors from "cors";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
 
+import { requireSignIn } from "./middlewares/authMiddleware.js";
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
@@ -22,13 +24,21 @@ app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"));
 
-// API routes
+/* =========================
+   API ROUTES (NO STATIC ISSUE)
+========================= */
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/category", categoryRoutes);
 app.use("/api/v1/product", productRoutes);
-app.use("/api/v1", requireSignIn, protectedRoutes);
 
-// ✅ SERVE FRONTEND (IMPORTANT)
+/* ONLY PROTECTED ROUTES */
+app.use("/api/v1/protected", requireSignIn, (req, res) => {
+  res.send("Protected route working");
+});
+
+/* =========================
+   FRONTEND STATIC FILES
+========================= */
 app.use(express.static(join(__dirname, "./client/build")));
 
 app.get("*", (req, res) => {
@@ -39,7 +49,6 @@ const PORT = process.env.PORT || 8080;
 
 app.listen(PORT, () => {
   console.log(
-    `Server Running on ${process.env.DEV_MODE} mode on port ${PORT}`.bgCyan
-      .white,
+    `Server Running on ${process.env.DEV_MODE} mode on port ${PORT}`.bgCyan.white
   );
 });
