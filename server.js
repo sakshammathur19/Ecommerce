@@ -26,6 +26,7 @@ app.use(morgan("dev"));
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/category", categoryRoutes);
 app.use("/api/v1/product", productRoutes);
+app.use("/api/v1", requireSignIn, protectedRoutes);
 
 // ✅ SERVE FRONTEND (IMPORTANT)
 app.use(express.static(join(__dirname, "./client/build")));
