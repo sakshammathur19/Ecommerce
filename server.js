@@ -20,10 +20,7 @@ const app = express();
 ========================= */
 app.use(
   cors({
-    origin: [
-      "http://localhost:3000",
-      "https://ecommerce-lake-nine-89.vercel.app",
-    ],
+    origin: ["https://ecommerce-lake-nine-89.vercel.app"],
     credentials: true,
   }),
 );
