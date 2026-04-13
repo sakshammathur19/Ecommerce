@@ -12,35 +12,47 @@ const Login = () => {
   const [auth, setAuth] = useAuth();
   const navigate = useNavigate();
 
+  // 🔥 FIX: Works for both CRA and Vite deploy
+  const API = process.env.REACT_APP_API || import.meta.env.VITE_API;
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     try {
       const res = await axios.post(
-        `${process.env.REACT_APP_API}/api/v1/auth/login`,
+        `${API}/api/v1/auth/login`,
         { email, password },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        },
       );
 
-      if (res.data.success) {
-        toast.success(res.data.message);
+      console.log("LOGIN RESPONSE:", res.data);
 
-        setAuth({
-          ...auth,
+      if (res.data?.success) {
+        toast.success(res.data.message || "Login successful");
+
+        const userData = {
           user: res.data.user,
           token: res.data.token,
-        });
-        localStorage.setItem("auth", JSON.stringify(res.data));
+        };
 
-        if (res.data.user.role === "admin" || res.data.user.role === 1) {
+        setAuth(userData);
+        localStorage.setItem("auth", JSON.stringify(userData));
+
+        if (res.data.user?.role === "admin" || res.data.user?.role === 1) {
           navigate("/dashboard/admin");
         } else {
           navigate("/dashboard/user");
         }
       } else {
-        toast.error(res.data.message);
+        toast.error(res.data?.message || "Login failed");
       }
     } catch (error) {
-      console.log(error);
-      toast.error("Something went wrong");
+      console.log("LOGIN ERROR:", error);
+      toast.error(error.response?.data?.message || "Something went wrong");
     }
   };
 
