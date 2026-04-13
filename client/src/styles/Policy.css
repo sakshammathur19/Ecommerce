@@ -1,48 +1,97 @@
-/* Policy.css */
+/* =========================
+   OAKAURA POLICY PAGE THEME
+========================= */
 
 .policy-page {
-  font-family: "Arial", sans-serif;
-  color: #333;
+  font-family: "Poppins", sans-serif;
+  background: linear-gradient(180deg, #0f0f0f, #1a120b);
+  color: #eaeaea;
+  padding-bottom: 40px;
 }
 
-/* Header */
+/* =========================
+   HEADER
+========================= */
+.policy-header {
+  text-align: center;
+  padding: 40px 20px;
+}
+
 .policy-header h1 {
   font-size: 3rem;
   font-weight: 700;
-  color: #1a1a1a;
+  color: #d4a373; /* wooden gold */
+  letter-spacing: 1px;
 }
 
 .policy-header .lead {
   font-size: 1.2rem;
-  color: #555;
+  color: #cfcfcf;
   margin-top: 10px;
+  opacity: 0.9;
 }
 
-/* Image */
+/* =========================
+   IMAGE
+========================= */
 .policy-img {
   width: 100%;
   border-radius: 15px;
-  transition:
-    transform 0.3s ease,
-    box-shadow 0.3s ease;
+  transition: all 0.4s ease;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
 }
 
 .policy-img:hover {
-  transform: scale(1.05);
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+  transform: scale(1.03);
+  box-shadow: 0 20px 50px rgba(212, 163, 115, 0.2);
 }
 
-/* Content */
+/* =========================
+   CONTENT BOX
+========================= */
+.policy-content {
+  background: rgba(28, 20, 12, 0.85);
+  padding: 25px;
+  border-radius: 15px;
+  margin-top: 20px;
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.4);
+}
+
+/* HEADINGS */
 .policy-content h2 {
   font-weight: 600;
-  color: #222;
+  color: #d4a373;
   margin-top: 20px;
   margin-bottom: 10px;
+  border-left: 4px solid #d4a373;
+  padding-left: 10px;
 }
 
+/* TEXT */
 .policy-content p {
   font-size: 1rem;
-  line-height: 1.6;
-  color: #555;
+  line-height: 1.8;
+  color: #dcdcdc;
   margin-bottom: 15px;
+}
+
+/* =========================
+   HOVER EFFECT CARD STYLE
+========================= */
+.policy-content:hover {
+  transform: translateY(-3px);
+  transition: 0.3s ease;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+@media (max-width: 768px) {
+  .policy-header h1 {
+    font-size: 2rem;
+  }
+
+  .policy-content {
+    padding: 15px;
+  }
 }

@@ -5,6 +5,7 @@ import axios from "axios";
 import { useAuth } from "../../Context/auth";
 import moment from "moment";
 import { Select } from "antd";
+import "../../styles/AdminOrders.css";
 
 const { Option } = Select;
 
@@ -52,7 +53,7 @@ const AdminOrders = () => {
           headers: {
             Authorization: `Bearer ${auth?.token}`,
           },
-        }
+        },
       );
 
       getOrders(); // refresh
@@ -63,7 +64,7 @@ const AdminOrders = () => {
 
   return (
     <Layout title={"All Orders Data"}>
-      <div className="container-fluid m-3 p-3 dashboard">
+      <div className="admin-orders container-fluid">
         <div className="row">
           {/* LEFT MENU */}
           <div className="col-md-3">
@@ -72,71 +73,81 @@ const AdminOrders = () => {
 
           {/* RIGHT CONTENT */}
           <div className="col-md-9">
-            <h1>All Orders</h1>
+            <h1 className="admin-title">All Orders</h1>
 
-            {orders?.length === 0 && <h4>No Orders Found</h4>}
+            {orders?.length === 0 && (
+              <h4 className="text-light">No Orders Found</h4>
+            )}
 
             {orders?.map((o, i) => (
-              <div className="border shadow mb-3" key={o._id + i}>
-                <table className="table">
-                  <thead>
-                    <tr>
-                      <th>#</th>
-                      <th>Status</th>
-                      <th>Buyer</th>
-                      <th>Date</th>
-                      <th>Payment</th>
-                      <th>Quantity</th>
-                    </tr>
-                  </thead>
+              <div className="order-card" key={o._id}>
+                {/* ORDER HEADER */}
+                <div className="order-header">
+                  <span>Order #{i + 1}</span>
+                  <span className="status-badge">{o?.status}</span>
+                </div>
 
-                  <tbody>
-                    <tr>
-                      <td>{i + 1}</td>
+                {/* ORDER TABLE */}
+                <div className="table-responsive">
+                  <table className="table order-table">
+                    <thead>
+                      <tr>
+                        <th>Buyer</th>
+                        <th>Date</th>
+                        <th>Payment</th>
+                        <th>Items</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
 
-                      <td>
-                        <Select
-                          variant="borderless"
-                          onChange={(value) => handleChange(value, o._id)}
-                          defaultValue={o?.status}
-                        >
-                          {status.map((s, i) => (
-                            <Option key={i} value={s}>
-                              {s}
-                            </Option>
-                          ))}
-                        </Select>
-                      </td>
+                    <tbody>
+                      <tr>
+                        <td>{o?.buyer?.name}</td>
+                        <td>{moment(o?.createdAt).fromNow()}</td>
+                        <td>
+                          <span
+                            className={
+                              o?.payment?.success
+                                ? "payment-success"
+                                : "payment-failed"
+                            }
+                          >
+                            {o?.payment?.success ? "Success" : "Failed"}
+                          </span>
+                        </td>
+                        <td>{o?.products?.length}</td>
 
-                      <td>{o?.buyer?.name}</td>
-
-                      <td>{moment(o?.createdAt).fromNow()}</td>
-
-                      <td>{o?.payment?.success ? "Success" : "Failed"}</td>
-
-                      <td>{o?.products?.length}</td>
-                    </tr>
-                  </tbody>
-                </table>
+                        <td>
+                          <Select
+                            variant="borderless"
+                            className="status-select"
+                            onChange={(value) => handleChange(value, o._id)}
+                            defaultValue={o?.status}
+                          >
+                            {status.map((s, i) => (
+                              <Option key={i} value={s}>
+                                {s}
+                              </Option>
+                            ))}
+                          </Select>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
 
                 {/* PRODUCTS */}
-                <div className="container">
+                <div className="products-grid">
                   {o?.products?.map((p) => (
-                    <div className="row mb-2 p-2 card flex-row" key={p._id}>
-                      <div className="col-md-4">
-                        <img
-                          src={`/api/v1/product/product-photo/${p._id}`}
-                          className="card-img-top"
-                          alt={p.name}
-                          width="100px"
-                          height="100px"
-                        />
-                      </div>
-
-                      <div className="col-md-8">
-                        <p>{p.name}</p>
-                        <p>{p.description.substring(0, 30)}</p>
-                        <p>Price : ₹ {p.price}</p>
+                    <div className="product-mini-card" key={p._id}>
+                      <img
+                        src={`/api/v1/product/product-photo/${p._id}`}
+                        alt={p.name}
+                      />
+                      <div>
+                        <h6>{p.name}</h6>
+                        <p>{p.description.substring(0, 40)}...</p>
+                        <span>₹ {p.price}</span>
                       </div>
                     </div>
                   ))}

@@ -105,11 +105,16 @@ const HomePage = () => {
     }
   };
   return (
-    <Layout title={"ALl Products - Best offers "}>
-      <div className="container-fluid row mt-3">
-        <div className="col-md-2">
-          <h4 className="text-center">Filter By Category</h4>
-          <div className="d-flex flex-column">
+ 
+  <Layout title={"ALL Products - Best offers"}>
+    <div className="homepage container-fluid">
+      <div className="row">
+
+        {/* FILTER SIDEBAR */}
+        <div className="col-md-2 filter-panel">
+          <h4 className="filter-title">Filter By Category</h4>
+
+          <div className="filter-box">
             {categories?.map((c) => (
               <Checkbox
                 key={c._id}
@@ -119,82 +124,89 @@ const HomePage = () => {
               </Checkbox>
             ))}
           </div>
-          {/* price filter */}
-          <h4 className="text-center mt-4">Filter By Price</h4>
-          <div className="d-flex flex-column">
+
+          <h4 className="filter-title mt-4">Filter By Price</h4>
+
+          <div className="filter-box">
             <Radio.Group onChange={(e) => setRadio(e.target.value)}>
               {Prices?.map((p) => (
-                <div key={p._id}>
-                  <Radio value={p.array}>{p.name}</Radio>
-                </div>
+                <Radio key={p._id} value={p.array}>
+                  {p.name}
+                </Radio>
               ))}
             </Radio.Group>
           </div>
-          <div className="d-flex flex-column">
-            <button
-              className="btn btn-danger"
-              onClick={() => window.location.reload()}
-            >
-              RESET FILTERS
-            </button>
-          </div>
+
+          <button
+            className="btn reset-btn mt-3"
+            onClick={() => window.location.reload()}
+          >
+            RESET FILTERS
+          </button>
         </div>
-        <div className="col-md-9 offset-1">
-          <h1 className="text-center">All Products</h1>
-          <div className="d-flex flex-wrap">
+
+        {/* PRODUCTS SECTION */}
+        <div className="col-md-10 product-section">
+          <h1 className="product-heading">All Products</h1>
+
+          <div className="product-grid">
             {products?.map((p) => (
-              <div className="card m-2" style={{ width: "18rem" }} key={p._id}>
-                <img
-                  src={`/api/v1/product/product-photo/${p._id}`}
-                  className="card-img-top"
-                  alt={p.name}
-                />
-                <div className="card-body">
-                  <h5 className="card-title">{p.name}</h5>
-                  <p className="card-text">
-                    {p.description.substring(0, 30)}...
-                  </p>
-                  <p className="card-text"> $ {p.price}</p>
-                  <button
-                    className="btn btn-primary ms-1"
-                    onClick={() => navigate(`/product/${p.slug}`)}
-                  >
-                    More Details
-                  </button>
-                  <button
-                    className="btn btn-secondary ms-1"
-                    onClick={() => {
-                      setCart([...cart, p]);
-                      localStorage.setItem(
-                        "cart",
-                        JSON.stringify([...cart, p]),
-                      );
-                      toast.success("Item Added to cart");
-                    }}
-                  >
-                    ADD TO CART
-                  </button>
+              <div className="product-card" key={p._id}>
+                <div className="image-container">
+                  <img
+                    src={`/api/v1/product/product-photo/${p._id}`}
+                    alt={p.name}
+                  />
+                </div>
+
+                <div className="product-info">
+                  <h5>{p.name}</h5>
+                  <p>{p.description.substring(0, 40)}...</p>
+                  <h6>₹ {p.price}</h6>
+
+                  <div className="btn-group">
+                    <button
+                      className="btn details-btn"
+                      onClick={() => navigate(`/product/${p.slug}`)}
+                    >
+                      View
+                    </button>
+
+                    <button
+                      className="btn cart-btn"
+                      onClick={() => {
+                        setCart([...cart, p]);
+                        localStorage.setItem(
+                          "cart",
+                          JSON.stringify([...cart, p])
+                        );
+                        toast.success("Added to cart");
+                      }}
+                    >
+                      Add
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}
           </div>
-          <div className="m-2 p-3">
-            {products && products.length < total && (
+
+          {/* LOAD MORE */}
+          {products && products.length < total && (
+            <div className="text-center mt-4">
               <button
-                className="btn btn-warning"
-                onClick={(e) => {
-                  e.preventDefault();
-                  setPage(page + 1);
-                }}
+                className="btn load-btn"
+                onClick={() => setPage(page + 1)}
               >
-                {loading ? "Loading ..." : "Loadmore"}
+                {loading ? "Loading..." : "Load More"}
               </button>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </div>
-    </Layout>
-  );
+    </div>
+  </Layout>
+);
 };
 
 export default HomePage;

@@ -5,34 +5,34 @@ import "../../styles/Footer.css";
 
 const Footer = () => {
   return (
-    <div className="footer">
+    <footer className="footer">
       <div className="footer-container">
-        {/* Brand */}
+        {/* BRAND */}
         <div className="footer-brand">
-          <h1>Techsaksham</h1>
+          <h1>OakAura</h1>
           <p>
-            Your premium furniture store. Bringing style & comfort to every
-            corner of your home.
+            Crafted in Wood, Designed for Life. Premium furniture built with
+            elegance, durability, and modern aesthetics.
           </p>
         </div>
 
-        {/* Quick Links */}
+        {/* QUICK LINKS */}
         <div className="footer-links">
           <h2>Quick Links</h2>
-          <Link to="/about">About Us</Link>
+          <Link to="/">Home</Link>
+          <Link to="/about">About</Link>
           <Link to="/contact">Contact</Link>
           <Link to="/policy">Privacy Policy</Link>
-          <Link to="/">Products</Link>
         </div>
 
-        {/* Contact Info */}
+        {/* CONTACT */}
         <div className="footer-contact">
-          <h2>Contact Us</h2>
-          <p>📍 123 Furniture Street, Jaipur, India</p>
-          <p>📞 +91 12345 67890</p>
-          <p>✉️ support@techsaksham.com</p>
+          <h2>Contact</h2>
+          <p>📍 Jaipur, Rajasthan, India</p>
+          <p>📞 +91 9784957969</p>
+          <p>✉️ skdsaksham@gmail.com</p>
 
-          {/* Social Icons */}
+          {/* SOCIAL */}
           <div className="footer-social">
             <a href="https://facebook.com" target="_blank" rel="noreferrer">
               <FaFacebookF />
@@ -47,10 +47,11 @@ const Footer = () => {
         </div>
       </div>
 
+      {/* BOTTOM */}
       <div className="footer-bottom">
-        &copy; {new Date().getFullYear()} Techsaksham. All Rights Reserved.
+        © {new Date().getFullYear()} ALL RIGHTS ARE RESERVED
       </div>
-    </div>
+    </footer>
   );
 };
 

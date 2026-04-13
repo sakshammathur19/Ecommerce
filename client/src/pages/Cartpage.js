@@ -6,45 +6,54 @@ import { useNavigate } from "react-router-dom";
 import DropIn from "braintree-web-drop-in-react";
 import axios from "axios";
 import toast from "react-hot-toast";
-import "../styles/CartPage.css"
+import "../styles/CartPage.css";
 
 const CartPage = () => {
-  const [auth, setAuth] = useAuth();
+  const [auth] = useAuth();
   const [cart, setCart] = useCart();
   const [clientToken, setClientToken] = useState("");
   const [instance, setInstance] = useState("");
   const [loading, setLoading] = useState(false);
+
   const navigate = useNavigate();
 
-  //total price
+  // 💰 Convert USD → INR (static rate approx)
+  const convertToINR = (usd) => usd * 83;
+
+  // 💰 Total Price in INR
   const totalPrice = () => {
     try {
       let total = 0;
-      cart?.map((item) => {
-        total = total + item.price;
+      cart?.forEach((item) => {
+        total += item.price;
       });
-      return total.toLocaleString("en-US", {
+
+      const inr = convertToINR(total);
+
+      return inr.toLocaleString("en-IN", {
         style: "currency",
-        currency: "USD",
+        currency: "INR",
       });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  //detele item
-  const removeCartItem = (pid) => {
-    try {
-      let myCart = [...cart];
-      let index = myCart.findIndex((item) => item._id === pid);
-      myCart.splice(index, 1);
-      setCart(myCart);
-      localStorage.setItem("cart", JSON.stringify(myCart));
     } catch (error) {
       console.log(error);
     }
   };
 
-  //get payment gateway token
+  // 🗑 Remove item
+  const removeCartItem = (pid) => {
+    try {
+      const myCart = [...cart];
+      const index = myCart.findIndex((item) => item._id === pid);
+      myCart.splice(index, 1);
+      setCart(myCart);
+      localStorage.setItem("cart", JSON.stringify(myCart));
+      toast.success("Item removed");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // 🔑 Get payment token
   const getToken = async () => {
     try {
       const { data } = await axios.get("/api/v1/product/braintree/token");
@@ -53,138 +62,137 @@ const CartPage = () => {
       console.log(error);
     }
   };
+
   useEffect(() => {
     getToken();
   }, [auth?.token]);
 
-  //handle payments
+  // 💳 Payment
   const handlePayment = async () => {
     try {
       setLoading(true);
+
       const { nonce } = await instance.requestPaymentMethod();
+
       const { data } = await axios.post("/api/v1/product/braintree/payment", {
         nonce,
         cart,
       });
+
       setLoading(false);
       localStorage.removeItem("cart");
       setCart([]);
+
       navigate("/dashboard/user/orders");
-      toast.success("Payment Completed Successfully ");
+      toast.success("Payment Successful 🎉");
     } catch (error) {
       console.log(error);
       setLoading(false);
+      toast.error("Payment Failed");
     }
   };
+
   return (
     <Layout>
-      <div className="container">
-        <div className="row">
-          <div className="col-md-12">
-            <h1 className="text-center bg-light p-2 mb-1">
-              {`Hello ${auth?.token && auth?.user?.name}`}
-            </h1>
-            <h4 className="text-center">
-              {cart?.length
-                ? `You Have ${cart.length} items in your cart ${
-                    auth?.token ? "" : "please login to checkout"
-                  }`
-                : " Your Cart Is Empty"}
-            </h4>
-          </div>
+      <div className="cart-page container py-4">
+        {/* HEADER */}
+        <div className="text-center mb-4">
+          <h2 className="fw-bold text-gold">
+            Hello {auth?.user?.name || "Guest"} 
+          </h2>
+          <p className="text-muted cart-subtext">
+            {cart?.length
+              ? `You have ${cart.length} items in your cart`
+              : "Your cart is empty"}
+          </p>
         </div>
+
         <div className="row">
+          {/* LEFT CART ITEMS */}
           <div className="col-md-8">
             {cart?.map((p) => (
-              <div className="row mb-2 p-3 card flex-row" key={p._id}>
-                <div className="col-md-4">
+              <div className="cart-card shadow-sm mb-3" key={p._id}>
+                <div className="cart-img">
                   <img
                     src={`/api/v1/product/product-photo/${p._id}`}
-                    className="card-img-top"
                     alt={p.name}
-                    width="100px"
-                    height={"100px"}
                   />
                 </div>
-                <div className="col-md-8">
-                  <p>{p.name}</p>
-                  <p>{p.description.substring(0, 30)}</p>
-                  <p>Price : {p.price}</p>
-                  <button
-                    className="btn btn-danger"
-                    onClick={() => removeCartItem(p._id)}
-                  >
-                    Remove
-                  </button>
+
+                <div className="cart-details">
+                  <h5>{p.name}</h5>
+                  <p>{p.description.substring(0, 60)}...</p>
+
+                  <div className="d-flex justify-content-between align-items-center">
+                    <h6 className="price">
+                      ₹ {convertToINR(p.price).toLocaleString("en-IN")}
+                    </h6>
+
+                    <button
+                      className="btn btn-sm btn-danger"
+                      onClick={() => removeCartItem(p._id)}
+                    >
+                      Remove
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}
           </div>
-          <div className="col-md-4 text-center">
-            <h2>Cart Summary</h2>
-            <p>Total | Checkout | Payment</p>
-            <hr />
-            <h4>Total : {totalPrice()} </h4>
-            {auth?.user?.address ? (
-              <>
-                <div className="mb-3">
-                  <h4>Current Address</h4>
-                  <h5>{auth?.user?.address}</h5>
+
+          {/* RIGHT SUMMARY */}
+          <div className="col-md-4">
+            <div className="cart-summary shadow">
+              <h4 className="text-center mb-3">Cart Summary</h4>
+
+              <hr />
+
+              <h5 className="text-center mb-3">Total: {totalPrice()}</h5>
+
+              {/* ADDRESS */}
+              {auth?.user?.address ? (
+                <div className="address-box">
+                  <h6>Delivery Address</h6>
+                  <p>{auth?.user?.address}</p>
+
                   <button
-                    className="btn btn-outline-warning"
+                    className="btn btn-outline-warning w-100"
                     onClick={() => navigate("/dashboard/user/profile")}
                   >
                     Update Address
                   </button>
                 </div>
-              </>
-            ) : (
-              <div className="mb-3">
-                {auth?.token ? (
-                  <button
-                    className="btn btn-outline-warning"
-                    onClick={() => navigate("/dashboard/user/profile")}
-                  >
-                    Update Address
-                  </button>
-                ) : (
-                  <button
-                    className="btn btn-outline-warning"
-                    onClick={() =>
-                      navigate("/login", {
-                        state: "/cart",
-                      })
-                    }
-                  >
-                    Plase Login to checkout
-                  </button>
+              ) : (
+                <button
+                  className="btn btn-warning w-100"
+                  onClick={() => navigate("/login", { state: "/cart" })}
+                >
+                  Login to Checkout
+                </button>
+              )}
+
+              {/* PAYMENT */}
+              <div className="mt-3">
+                {!clientToken || !cart?.length ? null : (
+                  <>
+                    <DropIn
+                      options={{
+                        authorization: clientToken,
+                        paypal: { flow: "vault" },
+                      }}
+                      onInstance={(instance) => setInstance(instance)}
+                    />
+
+                    <button
+                      className="btn btn-dark w-100 mt-2"
+                      onClick={handlePayment}
+                      disabled={loading || !instance || !auth?.user?.address}
+                    >
+                      {loading ? "Processing..." : "Pay Now"}
+                    </button>
+                  </>
                 )}
               </div>
-            )}
-            <div className="mt-2">
-              {!clientToken || !cart?.length ? (
-                ""
-              ) : (
-                <>
-                  <DropIn
-                    options={{
-                      authorization: clientToken,
-                      paypal: {
-                        flow: "vault",
-                      },
-                    }}
-                    onInstance={(instance) => setInstance(instance)}
-                  />
-
-                  <button
-                    className="btn btn-primary"
-                    onClick={handlePayment}
-                    disabled={loading || !instance || !auth?.user?.address}
-                  >
-                    {loading ? "Processing ...." : "Make Payment"}
-                  </button>
-                </>
-              )}
             </div>
           </div>
         </div>
