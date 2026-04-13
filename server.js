@@ -22,7 +22,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:3000",
-      "https://ecommerce-git-main-saksham-mathurs-projects-c4ed7394.vercel.app",
+      "https://ecommerce-lake-nine-89.vercel.app",
     ],
     credentials: true,
   }),
