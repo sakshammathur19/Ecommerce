@@ -10,40 +10,19 @@ import { useAuth } from "../../Context/auth";
 const CreateCategory = () => {
   const [auth] = useAuth();
 
+  const API = process.env.REACT_APP_API;
+
   const [categories, setCategories] = useState([]);
   const [name, setName] = useState("");
   const [visible, setVisible] = useState(false);
   const [selected, setSelected] = useState(null);
   const [updatedName, setUpdatedName] = useState("");
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const { data } = await axios.post(
-        "/api/v1/category/create-category",
-        { name },
-        {
-          headers: {
-            Authorization: `Bearer ${auth?.token}`, // 🔥 FIX
-          },
-        },
-      );
-
-      if (data?.success) {
-        toast.success(`${name} is created`);
-        getAllCategory();
-      } else {
-        toast.error(data.message);
-      }
-    } catch (error) {
-      console.log(error);
-      toast.error("Something went wrong");
-    }
-  };
-
+  // 🔥 GET ALL CATEGORY
   const getAllCategory = async () => {
     try {
-      const { data } = await axios.get("/api/v1/category/get-category");
+      const { data } = await axios.get(`${API}/api/v1/category/get-category`);
+
       if (data.success) {
         setCategories(data.category);
       }
@@ -57,24 +36,54 @@ const CreateCategory = () => {
     getAllCategory();
   }, []);
 
+  // 🔥 CREATE CATEGORY
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const { data } = await axios.post(
+        `${API}/api/v1/category/create-category`,
+        { name },
+        {
+          headers: {
+            Authorization: `Bearer ${auth?.token}`,
+          },
+        },
+      );
+
+      if (data.success) {
+        toast.success(`${name} is created`);
+        setName("");
+        getAllCategory();
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error("Something went wrong");
+    }
+  };
+
+  // 🔥 UPDATE CATEGORY
   const handleUpdate = async (e) => {
     e.preventDefault();
+
     try {
       const { data } = await axios.put(
-        `/api/v1/category/update-category/${selected._id}`,
+        `${API}/api/v1/category/update-category/${selected._id}`,
         { name: updatedName },
         {
           headers: {
-            Authorization: `Bearer ${auth?.token}`, // 🔥 FIX
+            Authorization: `Bearer ${auth?.token}`,
           },
         },
       );
 
       if (data.success) {
         toast.success(`${updatedName} updated`);
+        setVisible(false);
         setSelected(null);
         setUpdatedName("");
-        setVisible(false);
         getAllCategory();
       } else {
         toast.error(data.message);
@@ -84,13 +93,14 @@ const CreateCategory = () => {
     }
   };
 
-  const handleDelete = async (pId) => {
+  // 🔥 DELETE CATEGORY
+  const handleDelete = async (id) => {
     try {
       const { data } = await axios.delete(
-        `/api/v1/category/delete-category/${pId}`,
+        `${API}/api/v1/category/delete-category/${id}`,
         {
           headers: {
-            Authorization: `Bearer ${auth?.token}`, // 🔥 FIX
+            Authorization: `Bearer ${auth?.token}`,
           },
         },
       );
@@ -117,6 +127,7 @@ const CreateCategory = () => {
           <div className="col-md-9">
             <h1>Manage Category</h1>
 
+            {/* CREATE FORM */}
             <div className="p-3 w-50">
               <CategoryForm
                 handleSubmit={handleSubmit}
@@ -125,6 +136,7 @@ const CreateCategory = () => {
               />
             </div>
 
+            {/* CATEGORY LIST */}
             <table className="table">
               <thead>
                 <tr>
@@ -161,6 +173,7 @@ const CreateCategory = () => {
               </tbody>
             </table>
 
+            {/* UPDATE MODAL */}
             <Modal
               onCancel={() => setVisible(false)}
               footer={null}
