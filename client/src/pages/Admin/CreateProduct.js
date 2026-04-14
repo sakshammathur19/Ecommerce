@@ -5,13 +5,13 @@ import toast from "react-hot-toast";
 import axios from "axios";
 import { Select } from "antd";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../Context/auth"; 
 
 const { Option } = Select;
 
 const CreateProduct = () => {
   const navigate = useNavigate();
-  const [auth] = useAuth(); 
+
+  const API = process.env.REACT_APP_API; // ✅ IMPORTANT
 
   const [categories, setCategories] = useState([]);
   const [name, setName] = useState("");
@@ -22,9 +22,19 @@ const CreateProduct = () => {
   const [shipping, setShipping] = useState("");
   const [photo, setPhoto] = useState("");
 
+  // 🔥 GET TOKEN FROM LOCALSTORAGE (FIX)
+  const getToken = () => {
+    const data = localStorage.getItem("auth");
+    return data ? JSON.parse(data).token : null;
+  };
+
+  // 🔥 GET ALL CATEGORY
   const getAllCategory = async () => {
     try {
-      const { data } = await axios.get("/api/v1/category/get-category");
+      const { data } = await axios.get(
+        `${API}/api/v1/category/get-category`
+      );
+
       if (data?.success) {
         setCategories(data?.category);
       }
@@ -38,9 +48,13 @@ const CreateProduct = () => {
     getAllCategory();
   }, []);
 
+  // 🔥 CREATE PRODUCT
   const handleCreate = async (e) => {
     e.preventDefault();
+
     try {
+      const token = getToken();
+
       const productData = new FormData();
       productData.append("name", name);
       productData.append("description", description);
@@ -51,13 +65,13 @@ const CreateProduct = () => {
       productData.append("photo", photo);
 
       const { data } = await axios.post(
-        "/api/v1/product/create-product",
+        `${API}/api/v1/product/create-product`, // ✅ FIXED URL
         productData,
         {
           headers: {
-            Authorization: `Bearer ${auth?.token}`, 
+            Authorization: `Bearer ${token}`, // ✅ FIXED TOKEN
           },
-        },
+        }
       );
 
       if (data?.success) {
@@ -76,17 +90,14 @@ const CreateProduct = () => {
     <Layout title={"Dashboard - Create Product"}>
       <div className="container-fluid m-3 p-3">
         <div className="row">
-          {/* Sidebar */}
           <div className="col-md-3">
             <AdminMenu />
           </div>
 
-          {/* Main Content */}
           <div className="col-md-9">
             <h1>Create Product</h1>
 
             <div className="m-1 w-75">
-              {/* Category Select */}
               <Select
                 bordered={false}
                 placeholder="Select a category"
@@ -102,7 +113,6 @@ const CreateProduct = () => {
                 ))}
               </Select>
 
-              {/* Upload Photo */}
               <div className="mb-3">
                 <label className="btn btn-outline-secondary col-md-12">
                   {photo ? photo.name : "Upload Photo"}
@@ -115,82 +125,61 @@ const CreateProduct = () => {
                 </label>
               </div>
 
-              {/* Preview */}
               {photo && (
                 <div className="mb-3 text-center">
                   <img
                     src={URL.createObjectURL(photo)}
                     alt="product"
                     height="200"
-                    className="img img-responsive"
                   />
                 </div>
               )}
 
-              {/* Name */}
-              <div className="mb-3">
-                <input
-                  type="text"
-                  value={name}
-                  placeholder="Write product name"
-                  className="form-control"
-                  onChange={(e) => setName(e.target.value)}
-                />
-              </div>
+              <input
+                type="text"
+                value={name}
+                placeholder="Product name"
+                className="form-control mb-3"
+                onChange={(e) => setName(e.target.value)}
+              />
 
-              {/* Description */}
-              <div className="mb-3">
-                <textarea
-                  value={description}
-                  placeholder="Write description"
-                  className="form-control"
-                  onChange={(e) => setDescription(e.target.value)}
-                />
-              </div>
+              <textarea
+                value={description}
+                placeholder="Description"
+                className="form-control mb-3"
+                onChange={(e) => setDescription(e.target.value)}
+              />
 
-              {/* Price */}
-              <div className="mb-3">
-                <input
-                  type="number"
-                  value={price}
-                  placeholder="Write price"
-                  className="form-control"
-                  onChange={(e) => setPrice(e.target.value)}
-                />
-              </div>
+              <input
+                type="number"
+                value={price}
+                placeholder="Price"
+                className="form-control mb-3"
+                onChange={(e) => setPrice(e.target.value)}
+              />
 
-              {/* Quantity */}
-              <div className="mb-3">
-                <input
-                  type="number"
-                  value={quantity}
-                  placeholder="Write quantity"
-                  className="form-control"
-                  onChange={(e) => setQuantity(e.target.value)}
-                />
-              </div>
+              <input
+                type="number"
+                value={quantity}
+                placeholder="Quantity"
+                className="form-control mb-3"
+                onChange={(e) => setQuantity(e.target.value)}
+              />
 
-              {/* Shipping */}
-              <div className="mb-3">
-                <Select
-                  bordered={false}
-                  placeholder="Select Shipping"
-                  size="large"
-                  showSearch
-                  className="form-select mb-3"
-                  onChange={(value) => setShipping(value)}
-                >
-                  <Option value="0">No</Option>
-                  <Option value="1">Yes</Option>
-                </Select>
-              </div>
+              <Select
+                bordered={false}
+                placeholder="Shipping"
+                size="large"
+                className="form-select mb-3"
+                onChange={(value) => setShipping(value)}
+              >
+                <Option value="0">No</Option>
+                <Option value="1">Yes</Option>
+              </Select>
 
-              {/* Submit */}
-              <div className="mb-3">
-                <button className="btn btn-primary" onClick={handleCreate}>
-                  CREATE PRODUCT
-                </button>
-              </div>
+              <button className="btn btn-primary" onClick={handleCreate}>
+                CREATE PRODUCT
+              </button>
             </div>
           </div>
         </div>
