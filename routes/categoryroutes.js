@@ -3,7 +3,7 @@ import {
   createCategoryController,
   updateCategoryController,
   deleteCategoryController,
-  categoryController, // ✅ correct name
+  getCategoryController, // ✅ FIX THIS
   singleCategoryController,
 } from "../controllers/categoryController.js";
 
@@ -35,8 +35,8 @@ router.delete(
   deleteCategoryController,
 );
 
-// ✅ FIXED HERE
-router.get("/get-category", categoryController);
+// GET ALL ✅ FIXED
+router.get("/get-category", getCategoryController);
 
 // SINGLE
 router.get("/single-category/:slug", singleCategoryController);
