@@ -19,7 +19,7 @@ const Policy = () => {
         <div className="row align-items-start policy-content">
           <div className="col-lg-6 mb-4 mb-lg-0">
             <img
-              src={process.env.PUBLIC_URL + "/privacypolicy.png"}
+              src={process.env.PUBLIC_URL + "/Privacypolicy.png"}
               alt="Privacy Policy"
               className="policy-img shadow"
             />
