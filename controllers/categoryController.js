@@ -1,7 +1,9 @@
 import categoryModel from "../models/categoryModel.js";
 import slugify from "slugify";
 
-// CREATE CATEGORY
+/* =========================
+   CREATE CATEGORY
+========================= */
 export const createCategoryController = async (req, res) => {
   try {
     const { name } = req.body;
@@ -26,7 +28,7 @@ export const createCategoryController = async (req, res) => {
 
     res.status(201).send({
       success: true,
-      message: "New category created",
+      message: "Category Created Successfully",
       category,
     });
   } catch (error) {
@@ -39,7 +41,9 @@ export const createCategoryController = async (req, res) => {
   }
 };
 
-// UPDATE CATEGORY
+/* =========================
+   UPDATE CATEGORY
+========================= */
 export const updateCategoryController = async (req, res) => {
   try {
     const { name } = req.body;
@@ -48,7 +52,7 @@ export const updateCategoryController = async (req, res) => {
     const category = await categoryModel.findByIdAndUpdate(
       id,
       { name, slug: slugify(name) },
-      { new: true },
+      { new: true }
     );
 
     res.status(200).send({
@@ -66,8 +70,10 @@ export const updateCategoryController = async (req, res) => {
   }
 };
 
-// ✅ IMPORTANT: NAME FIXED HERE
-export const categoryController = async (req, res) => {
+/* =========================
+   GET ALL CATEGORIES (🔥 FIXED NAME)
+========================= */
+export const getCategoryController = async (req, res) => {
   try {
     const category = await categoryModel.find({});
 
@@ -86,7 +92,9 @@ export const categoryController = async (req, res) => {
   }
 };
 
-// SINGLE CATEGORY
+/* =========================
+   SINGLE CATEGORY
+========================= */
 export const singleCategoryController = async (req, res) => {
   try {
     const category = await categoryModel.findOne({
@@ -108,7 +116,9 @@ export const singleCategoryController = async (req, res) => {
   }
 };
 
-// DELETE CATEGORY
+/* =========================
+   DELETE CATEGORY
+========================= */
 export const deleteCategoryController = async (req, res) => {
   try {
     const { id } = req.params;

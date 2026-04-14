@@ -3,7 +3,7 @@ import {
   createCategoryController,
   updateCategoryController,
   deleteCategoryController,
-  getCategoryController, // ✅ FIX THIS
+  getCategoryController,
   singleCategoryController,
 } from "../controllers/categoryController.js";
 
@@ -11,34 +11,44 @@ import { requireSignIn, isAdmin } from "../middlewares/authMiddleware.js";
 
 const router = express.Router();
 
-// CREATE
+/* =========================
+   CREATE CATEGORY
+========================= */
 router.post(
   "/create-category",
   requireSignIn,
   isAdmin,
-  createCategoryController,
+  createCategoryController
 );
 
-// UPDATE
+/* =========================
+   UPDATE CATEGORY
+========================= */
 router.put(
   "/update-category/:id",
   requireSignIn,
   isAdmin,
-  updateCategoryController,
+  updateCategoryController
 );
 
-// DELETE
+/* =========================
+   DELETE CATEGORY
+========================= */
 router.delete(
   "/delete-category/:id",
   requireSignIn,
   isAdmin,
-  deleteCategoryController,
+  deleteCategoryController
 );
 
-// GET ALL ✅ FIXED
+/* =========================
+   GET ALL CATEGORY
+========================= */
 router.get("/get-category", getCategoryController);
 
-// SINGLE
+/* =========================
+   SINGLE CATEGORY
+========================= */
 router.get("/single-category/:slug", singleCategoryController);
 
 export default router;
