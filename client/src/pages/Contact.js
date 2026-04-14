@@ -8,7 +8,7 @@ const Contact = () => {
       <div className="row contactus ">
         <div className="col-md-6 ">
           <img
-            src="/images/Contactus.png"
+            src={process.env.PUBLIC_URL + "/Contactus.png"}
             alt="contactus"
             style={{ width: "70%" }}
           />
