@@ -1,5 +1,6 @@
 {
   "name": "ecommerce",
+  "proxy": "http://localhost:8080",
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
@@ -39,4 +40,5 @@
     "postcss": "^8.5.8",
     "tailwindcss": "^4.2.2"
   }
+  
 }
