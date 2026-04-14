@@ -16,57 +16,54 @@ const CartPage = () => {
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
-
-  // 💰 Convert USD → INR (static rate approx)
-  const convertToINR = (usd) => usd * 83;
-
-  // 💰 Total Price in INR
-  const totalPrice = () => {
-    try {
-      let total = 0;
-      cart?.forEach((item) => {
-        total += item.price;
-      });
-
-      const inr = convertToINR(total);
-
-      return inr.toLocaleString("en-IN", {
-        style: "currency",
-        currency: "INR",
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  // 🗑 Remove item
-  const removeCartItem = (pid) => {
-    try {
-      const myCart = [...cart];
-      const index = myCart.findIndex((item) => item._id === pid);
-      myCart.splice(index, 1);
-      setCart(myCart);
-      localStorage.setItem("cart", JSON.stringify(myCart));
-      toast.success("Item removed");
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  // 🔑 Get payment token
   const API = process.env.REACT_APP_API;
 
-  // 🔑 Get payment token
+  // 💰 INR conversion
+  const convertToINR = (usd) => usd * 83;
+
+  // 💰 Total price
+  const totalPrice = () => {
+    let total = 0;
+    cart?.forEach((item) => {
+      total += item.price;
+    });
+
+    const inr = convertToINR(total);
+
+    return inr.toLocaleString("en-IN", {
+      style: "currency",
+      currency: "INR",
+    });
+  };
+
+  // 🗑 REMOVE ITEM
+  const removeCartItem = (pid) => {
+    const myCart = [...cart];
+    const index = myCart.findIndex((item) => item._id === pid);
+    myCart.splice(index, 1);
+    setCart(myCart);
+    localStorage.setItem("cart", JSON.stringify(myCart));
+    toast.success("Item removed");
+  };
+
+  // 🔑 GET TOKEN (PAYMENT)
   const getToken = async () => {
     try {
-      const { data } = await axios.get(`${API}/api/v1/product/braintree/token`);
+      const { data } = await axios.get(
+        `${API}/api/v1/product/braintree/token`
+      );
       setClientToken(data?.clientToken);
     } catch (error) {
       console.log(error);
     }
   };
 
-  // 💳 Payment
+  // 🔥 CALL TOKEN ON LOAD
+  useEffect(() => {
+    if (auth?.token) getToken();
+  }, [auth?.token]);
+
+  // 💳 PAYMENT
   const handlePayment = async () => {
     try {
       setLoading(true);
@@ -78,125 +75,128 @@ const CartPage = () => {
         {
           nonce,
           cart,
-        },
+        }
       );
 
       setLoading(false);
       localStorage.removeItem("cart");
       setCart([]);
-
-      navigate("/dashboard/user/orders");
       toast.success("Payment Successful 🎉");
+      navigate("/dashboard/user/orders");
     } catch (error) {
       console.log(error);
       setLoading(false);
       toast.error("Payment Failed");
     }
   };
+
   return (
     <Layout>
       <div className="cart-page container py-4">
+
         {/* HEADER */}
         <div className="text-center mb-4">
-          <h2 className="fw-bold text-gold">
-            Hello {auth?.user?.name || "Guest"}
-          </h2>
-          <p className="text-muted cart-subtext">
+          <h2>Hello {auth?.user?.name || "Guest"}</h2>
+          <p>
             {cart?.length
-              ? `You have ${cart.length} items in your cart`
-              : "Your cart is empty"}
+              ? `You have ${cart.length} items in cart`
+              : "Cart is empty"}
           </p>
         </div>
 
         <div className="row">
+
           {/* LEFT CART ITEMS */}
           <div className="col-md-8">
             {cart?.map((p) => (
-              <div className="cart-card shadow-sm mb-3" key={p._id}>
+              <div className="cart-card mb-3" key={p._id}>
+
+                {/* ✅ FIXED IMAGE */}
                 <div className="cart-img">
                   <img
-                    src={`/api/v1/product/product-photo/${p._id}`}
+                    src={`${API}/api/v1/product/product-photo/${p._id}`}
                     alt={p.name}
                   />
                 </div>
 
                 <div className="cart-details">
                   <h5>{p.name}</h5>
-                  <p>{p.description.substring(0, 60)}...</p>
+                  <p>{p.description?.substring(0, 60)}...</p>
 
-                  <div className="d-flex justify-content-between align-items-center">
-                    <h6 className="price">
-                      ₹ {convertToINR(p.price).toLocaleString("en-IN")}
-                    </h6>
+                  <div className="d-flex justify-content-between">
+                    <h6>₹ {convertToINR(p.price)}</h6>
 
                     <button
-                      className="btn btn-sm btn-danger"
+                      className="btn btn-danger btn-sm"
                       onClick={() => removeCartItem(p._id)}
                     >
                       Remove
                     </button>
                   </div>
                 </div>
+
               </div>
             ))}
           </div>
 
           {/* RIGHT SUMMARY */}
           <div className="col-md-4">
-            <div className="cart-summary shadow">
-              <h4 className="text-center mb-3">Cart Summary</h4>
 
-              <hr />
+            <h4>Cart Summary</h4>
+            <hr />
 
-              <h5 className="text-center mb-3">Total: {totalPrice()}</h5>
+            <h5>Total: {totalPrice()}</h5>
 
-              {/* ADDRESS */}
-              {auth?.user?.address ? (
-                <div className="address-box">
-                  <h6>Delivery Address</h6>
-                  <p>{auth?.user?.address}</p>
+            {/* ADDRESS */}
+            {auth?.user?.address ? (
+              <div>
+                <h6>Delivery Address</h6>
+                <p>{auth.user.address}</p>
+
+                <button
+                  className="btn btn-outline-warning w-100"
+                  onClick={() => navigate("/dashboard/user/profile")}
+                >
+                  Update Address
+                </button>
+              </div>
+            ) : (
+              <button
+                className="btn btn-warning w-100"
+                onClick={() => navigate("/login", { state: "/cart" })}
+              >
+                Login to Checkout
+              </button>
+            )}
+
+            {/* PAYMENT */}
+            <div className="mt-3">
+
+              {clientToken && cart?.length > 0 && (
+                <>
+                  <DropIn
+                    options={{
+                      authorization: clientToken,
+                      paypal: { flow: "vault" },
+                    }}
+                    onInstance={(instance) => setInstance(instance)}
+                  />
 
                   <button
-                    className="btn btn-outline-warning w-100"
-                    onClick={() => navigate("/dashboard/user/profile")}
+                    className="btn btn-dark w-100 mt-2"
+                    onClick={handlePayment}
+                    disabled={loading || !instance}
                   >
-                    Update Address
+                    {loading ? "Processing..." : "Pay Now"}
                   </button>
-                </div>
-              ) : (
-                <button
-                  className="btn btn-warning w-100"
-                  onClick={() => navigate("/login", { state: "/cart" })}
-                >
-                  Login to Checkout
-                </button>
+                </>
               )}
 
-              {/* PAYMENT */}
-              <div className="mt-3">
-                {!clientToken || !cart?.length ? null : (
-                  <>
-                    <DropIn
-                      options={{
-                        authorization: clientToken,
-                        paypal: { flow: "vault" },
-                      }}
-                      onInstance={(instance) => setInstance(instance)}
-                    />
-
-                    <button
-                      className="btn btn-dark w-100 mt-2"
-                      onClick={handlePayment}
-                      disabled={loading || !instance || !auth?.user?.address}
-                    >
-                      {loading ? "Processing..." : "Pay Now"}
-                    </button>
-                  </>
-                )}
-              </div>
             </div>
+
           </div>
         </div>
+
       </div>
     </Layout>
   );
