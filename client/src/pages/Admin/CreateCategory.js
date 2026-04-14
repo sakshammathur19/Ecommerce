@@ -5,11 +5,8 @@ import toast from "react-hot-toast";
 import axios from "axios";
 import CategoryForm from "../../components/Form/CategoryForm";
 import { Modal } from "antd";
-import { useAuth } from "../../Context/auth";
 
 const CreateCategory = () => {
-  const [auth] = useAuth();
-
   const API = process.env.REACT_APP_API;
 
   const [categories, setCategories] = useState([]);
@@ -17,6 +14,12 @@ const CreateCategory = () => {
   const [visible, setVisible] = useState(false);
   const [selected, setSelected] = useState(null);
   const [updatedName, setUpdatedName] = useState("");
+
+  // 🔥 GET TOKEN DIRECTLY FROM LOCALSTORAGE (FIX)
+  const getToken = () => {
+    const authData = localStorage.getItem("auth");
+    return authData ? JSON.parse(authData).token : null;
+  };
 
   // 🔥 GET ALL CATEGORY
   const getAllCategory = async () => {
@@ -41,12 +44,14 @@ const CreateCategory = () => {
     e.preventDefault();
 
     try {
+      const token = getToken();
+
       const { data } = await axios.post(
         `${API}/api/v1/category/create-category`,
         { name },
         {
           headers: {
-            Authorization: `Bearer ${auth?.token}`,
+            Authorization: `Bearer ${token}`,
           },
         },
       );
@@ -60,7 +65,7 @@ const CreateCategory = () => {
       }
     } catch (error) {
       console.log(error);
-      toast.error("Something went wrong");
+      toast.error("Create failed");
     }
   };
 
@@ -69,12 +74,14 @@ const CreateCategory = () => {
     e.preventDefault();
 
     try {
+      const token = getToken();
+
       const { data } = await axios.put(
         `${API}/api/v1/category/update-category/${selected._id}`,
         { name: updatedName },
         {
           headers: {
-            Authorization: `Bearer ${auth?.token}`,
+            Authorization: `Bearer ${token}`,
           },
         },
       );
@@ -96,11 +103,13 @@ const CreateCategory = () => {
   // 🔥 DELETE CATEGORY
   const handleDelete = async (id) => {
     try {
+      const token = getToken();
+
       const { data } = await axios.delete(
         `${API}/api/v1/category/delete-category/${id}`,
         {
           headers: {
-            Authorization: `Bearer ${auth?.token}`,
+            Authorization: `Bearer ${token}`,
           },
         },
       );
