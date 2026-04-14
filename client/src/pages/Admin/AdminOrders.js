@@ -5,7 +5,6 @@ import axios from "axios";
 import { useAuth } from "../../Context/auth";
 import moment from "moment";
 import { Select } from "antd";
-import "../../styles/AdminOrders.css";
 
 const { Option } = Select;
 
@@ -21,77 +20,74 @@ const AdminOrders = () => {
   const [orders, setOrders] = useState([]);
   const [auth] = useAuth();
 
-  // ✅ FIXED: useCallback added
+  const API = process.env.REACT_APP_API;
+
+  // GET ALL ORDERS
   const getOrders = useCallback(async () => {
     try {
-      const { data } = await axios.get("/api/v1/auth/all-orders", {
-        headers: {
-          Authorization: `Bearer ${auth?.token}`,
-        },
-      });
+      const { data } = await axios.get(
+        `${API}/api/v1/auth/all-orders`,
+        {
+          headers: {
+            Authorization: `Bearer ${auth?.token}`,
+          },
+        }
+      );
 
+      // 🔥 SAFE CHECK (IMPORTANT)
       if (data?.success) {
-        setOrders(data?.orders);
+        setOrders(data?.orders || []);
+      } else {
+        setOrders([]);
       }
     } catch (error) {
-      console.log("ERROR IN GET ORDERS:", error);
+      console.log("GET ORDERS ERROR:", error);
+      setOrders([]);
     }
-  }, [auth?.token]);
+  }, [auth?.token, API]);
 
-  // ✅ FIXED: dependency added safely
   useEffect(() => {
     if (auth?.token) getOrders();
   }, [auth?.token, getOrders]);
 
-  // 🔥 HANDLE STATUS CHANGE
+  // UPDATE STATUS
   const handleChange = async (value, orderId) => {
     try {
       await axios.put(
-        `/api/v1/auth/order-status/${orderId}`,
+        `${API}/api/v1/auth/order-status/${orderId}`,
         { status: value },
         {
           headers: {
             Authorization: `Bearer ${auth?.token}`,
           },
-        },
+        }
       );
 
-      getOrders(); // refresh
+      getOrders();
     } catch (error) {
-      console.log("STATUS UPDATE ERROR:", error);
+      console.log("STATUS ERROR:", error);
     }
   };
 
   return (
     <Layout title={"All Orders Data"}>
-      <div className="admin-orders container-fluid">
+      <div className="container-fluid">
         <div className="row">
-          {/* LEFT MENU */}
           <div className="col-md-3">
             <AdminMenu />
           </div>
 
-          {/* RIGHT CONTENT */}
           <div className="col-md-9">
-            <h1 className="admin-title">All Orders</h1>
+            <h1>All Orders</h1>
 
-            {orders?.length === 0 && (
-              <h4 className="text-light">No Orders Found</h4>
-            )}
-
-            {orders?.map((o, i) => (
-              <div className="order-card" key={o._id}>
-                {/* ORDER HEADER */}
-                <div className="order-header">
-                  <span>Order #{i + 1}</span>
-                  <span className="status-badge">{o?.status}</span>
-                </div>
-
-                {/* ORDER TABLE */}
-                <div className="table-responsive">
-                  <table className="table order-table">
+            {/* 🔥 SAFE MAP CHECK */}
+            {Array.isArray(orders) &&
+              orders.map((o, i) => (
+                <div className="border p-3 mb-3" key={o._id}>
+                  <table className="table">
                     <thead>
                       <tr>
+                        <th>#</th>
                         <th>Buyer</th>
                         <th>Date</th>
                         <th>Payment</th>
@@ -102,27 +98,24 @@ const AdminOrders = () => {
 
                     <tbody>
                       <tr>
+                        <td>{i + 1}</td>
                         <td>{o?.buyer?.name}</td>
+
+                        {/* 🔥 FIXED createdAt */}
                         <td>{moment(o?.createdAt).fromNow()}</td>
+
                         <td>
-                          <span
-                            className={
-                              o?.payment?.success
-                                ? "payment-success"
-                                : "payment-failed"
-                            }
-                          >
-                            {o?.payment?.success ? "Success" : "Failed"}
-                          </span>
+                          {o?.payment?.success ? "Success" : "Failed"}
                         </td>
-                        <td>{o?.products?.length}</td>
+
+                        <td>{o?.products?.length || 0}</td>
 
                         <td>
                           <Select
-                            variant="borderless"
-                            className="status-select"
-                            onChange={(value) => handleChange(value, o._id)}
                             defaultValue={o?.status}
+                            onChange={(value) =>
+                              handleChange(value, o._id)
+                            }
                           >
                             {status.map((s, i) => (
                               <Option key={i} value={s}>
@@ -134,26 +127,35 @@ const AdminOrders = () => {
                       </tr>
                     </tbody>
                   </table>
-                </div>
 
-                {/* PRODUCTS */}
-                <div className="products-grid">
-                  {o?.products?.map((p) => (
-                    <div className="product-mini-card" key={p._id}>
-                      <img
-                        src={`/api/v1/product/product-photo/${p._id}`}
-                        alt={p.name}
-                      />
-                      <div>
-                        <h6>{p.name}</h6>
-                        <p>{p.description.substring(0, 40)}...</p>
-                        <span>₹ {p.price}</span>
+                  {/* PRODUCTS */}
+                  <div className="d-flex flex-wrap">
+                    {o?.products?.map((p) => (
+                      <div
+                        key={p._id}
+                        className="card m-2 p-2"
+                        style={{ width: "16rem" }}
+                      >
+                        <img
+                          src={`${API}/api/v1/product/product-photo/${p._id}`}
+                          alt={p.name}
+                          className="card-img-top"
+                        />
+                        <div className="card-body">
+                          <h6>{p.name}</h6>
+                          <p>{p.description?.substring(0, 30)}...</p>
+                          <p>₹ {p.price}</p>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+
+            {/* EMPTY STATE */}
+            {orders.length === 0 && (
+              <h4 className="text-center">No Orders Found</h4>
+            )}
           </div>
         </div>
       </div>
