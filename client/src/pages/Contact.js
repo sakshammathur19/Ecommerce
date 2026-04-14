@@ -7,7 +7,11 @@ const Contact = () => {
     <Layout title={"Contact Us"}>
       <div className="row contactus ">
         <div className="col-md-6 ">
-          <img src="contactus.png" alt="contactus" style={{ width: "70%" }} />
+          <img
+            src="/client/public/Contactus.png"
+            alt="contactus"
+            style={{ width: "70%" }}
+          />
         </div>
         <div className="col-md-4">
           <h1 className="bg-dark p-2 text-white text-center">CONTACT US</h1>
