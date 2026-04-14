@@ -21,7 +21,7 @@ const CategoryProduct = () => {
   const getProductsByCat = async () => {
     try {
       const { data } = await axios.get(
-        `${API}/api/v1/product/product-category/${params.slug}`,
+        `${API}/api/v1/product/product-category/${params.slug}`
       );
 
       setProducts(data?.products);
@@ -34,9 +34,13 @@ const CategoryProduct = () => {
   return (
     <Layout>
       <div className="container mt-3">
-        <h4 className="text-center">Category - {category?.name}</h4>
+        <h4 className="text-center">
+          Category - {category?.name}
+        </h4>
 
-        <h6 className="text-center">{products?.length} result found</h6>
+        <h6 className="text-center">
+          {products?.length} result found
+        </h6>
 
         <div className="row">
           <div className="col-md-9 offset-1">
@@ -57,13 +61,17 @@ const CategoryProduct = () => {
                   <div className="card-body">
                     <h5>{p.name}</h5>
 
-                    <p>{p.description.substring(0, 30)}...</p>
+                    <p>
+                      {p.description.substring(0, 30)}...
+                    </p>
 
                     <p>₹ {p.price}</p>
 
                     <button
                       className="btn btn-primary ms-1"
-                      onClick={() => navigate(`/product/${p.slug}`)}
+                      onClick={() =>
+                        navigate(`/product/${p.slug}`)
+                      }
                     >
                       More Details
                     </button>
