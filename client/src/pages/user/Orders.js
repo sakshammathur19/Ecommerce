@@ -9,14 +9,18 @@ const Orders = () => {
   const [orders, setOrders] = useState([]);
   const [auth] = useAuth();
 
-  // ✅ FIXED API PATH (IMPORTANT)
   const getOrders = async () => {
     try {
       const { data } = await axios.get(
         `${process.env.REACT_APP_API}/api/v1/auth/orders`,
+        {
+          headers: {
+            Authorization: `Bearer ${auth?.token}`,
+          },
+        }
       );
 
-      setOrders(data?.orders || []);
+      setOrders(data || []); // ✅ backend returns array directly
     } catch (error) {
       console.log(error);
     }
@@ -37,6 +41,10 @@ const Orders = () => {
           <div className="col-md-9">
             <h1 className="text-center">All Orders</h1>
 
+            {orders?.length === 0 && (
+              <h5 className="text-center">No Orders Found</h5>
+            )}
+
             {orders?.map((o, i) => (
               <div className="border shadow mb-4 p-3" key={o._id}>
                 <table className="table">
@@ -56,19 +64,15 @@ const Orders = () => {
                       <td>{i + 1}</td>
                       <td>{o?.status}</td>
                       <td>{o?.buyer?.name}</td>
-
-                      {/* ✅ FIX DATE FIELD */}
                       <td>{moment(o?.createdAt).fromNow()}</td>
-
-                      {/* ✅ SAFE CHECK */}
-                      <td>{o?.payment?.success ? "Success" : "Failed"}</td>
-
+                      <td>
+                        {o?.payment?.success ? "Success" : "Failed"}
+                      </td>
                       <td>{o?.products?.length}</td>
                     </tr>
                   </tbody>
                 </table>
 
-                {/* PRODUCTS */}
                 <div className="container">
                   {o?.products?.map((p) => (
                     <div className="row mb-2 p-3 card flex-row" key={p._id}>
