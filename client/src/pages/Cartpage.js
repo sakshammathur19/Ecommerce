@@ -54,18 +54,17 @@ const CartPage = () => {
   };
 
   // 🔑 Get payment token
+  const API = process.env.REACT_APP_API;
+
+  // 🔑 Get payment token
   const getToken = async () => {
     try {
-      const { data } = await axios.get("/api/v1/product/braintree/token");
+      const { data } = await axios.get(`${API}/api/v1/product/braintree/token`);
       setClientToken(data?.clientToken);
     } catch (error) {
       console.log(error);
     }
   };
-
-  useEffect(() => {
-    getToken();
-  }, [auth?.token]);
 
   // 💳 Payment
   const handlePayment = async () => {
@@ -74,10 +73,13 @@ const CartPage = () => {
 
       const { nonce } = await instance.requestPaymentMethod();
 
-      const { data } = await axios.post("/api/v1/product/braintree/payment", {
-        nonce,
-        cart,
-      });
+      const { data } = await axios.post(
+        `${API}/api/v1/product/braintree/payment`,
+        {
+          nonce,
+          cart,
+        },
+      );
 
       setLoading(false);
       localStorage.removeItem("cart");
@@ -91,14 +93,13 @@ const CartPage = () => {
       toast.error("Payment Failed");
     }
   };
-
   return (
     <Layout>
       <div className="cart-page container py-4">
         {/* HEADER */}
         <div className="text-center mb-4">
           <h2 className="fw-bold text-gold">
-            Hello {auth?.user?.name || "Guest"} 
+            Hello {auth?.user?.name || "Guest"}
           </h2>
           <p className="text-muted cart-subtext">
             {cart?.length
