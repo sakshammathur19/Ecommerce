@@ -48,12 +48,12 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
         <Route path="/forgot-password" element={<ForgotPasssword />} />
+        <Route path="/search" element={<Search />} />
 
         {/* User Routes */}
         <Route path="/dashboard/user" element={<PrivateRoute />}>
           <Route index element={<Dashboard />} /> {/* /dashboard */}
           <Route path="orders" element={<Orders />} /> {/* /dashboard/orders */}
-          <Route path="search" element={<Search />} />
           <Route path="profile" element={<Profile />} />
           {/* /dashboard/profile */}
         </Route>
