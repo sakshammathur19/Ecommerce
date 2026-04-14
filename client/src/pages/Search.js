@@ -16,18 +16,14 @@ const Search = () => {
           <h1>Search Results</h1>
 
           <h6>
-            {values?.results.length < 1
+            {values?.results?.length < 1
               ? "No Products Found"
               : `Found ${values?.results.length} product(s)`}
           </h6>
 
           <div className="d-flex flex-wrap mt-4">
-            {values?.results.map((p) => (
-              <div
-                className="card m-2"
-                style={{ width: "18rem" }}
-                key={p._id}
-              >
+            {values?.results?.map((p) => (
+              <div className="card m-2" style={{ width: "18rem" }} key={p._id}>
                 {/* ✅ FIXED IMAGE */}
                 <img
                   src={`${API}/api/v1/product/product-photo/${p._id}`}
@@ -38,9 +34,7 @@ const Search = () => {
                 <div className="card-body">
                   <h5>{p.name}</h5>
 
-                  <p>
-                    {p.description.substring(0, 30)}...
-                  </p>
+                  <p>{p.description.substring(0, 30)}...</p>
 
                   <p>₹ {p.price}</p>
 

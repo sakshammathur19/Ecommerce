@@ -18,14 +18,17 @@ const SearchInput = () => {
 
     try {
       const { data } = await axios.get(
-        `/api/v1/product/search/${values.keyword.trim()}`
+        `${process.env.REACT_APP_API}/api/v1/product/search/${values.keyword.trim()}`,
       );
 
       // Backend returns { success: true, results: [...] }
-      if (data?.success) {
-        setValues({ ...values, results: data.results });
+     
+       setValues({
+        ...values,
+        results: data?.products || data?.results || data || [],
+      });
         navigate("/search");
-      }
+     
     } catch (error) {
       console.log(error);
       alert("Error while searching products");
@@ -41,9 +44,7 @@ const SearchInput = () => {
           placeholder="Search"
           aria-label="Search"
           value={values.keyword || ""}
-          onChange={(e) =>
-            setValues({ ...values, keyword: e.target.value })
-          }
+          onChange={(e) => setValues({ ...values, keyword: e.target.value })}
         />
         <button className="btn btn-outline-success" type="submit">
           Search
