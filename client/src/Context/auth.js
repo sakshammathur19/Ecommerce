@@ -4,9 +4,9 @@ import axios from "axios";
 const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
-  const [auth, setAuth] = useState({
-    user: null,
-    token: "",
+  const [auth, setAuth] = useState(() => {
+    const data = localStorage.getItem("auth");
+    return data ? JSON.parse(data) : { user: null, token: "" };
   });
 
   // Update axios headers whenever auth.token changes

@@ -5,7 +5,7 @@ import axios from "axios";
 import Spinner from "../Spinner";
 
 export default function PrivateRoute() {
-  const [ok, setOk] = useState(false);
+  const [ok, setOk] = useState(null); // 🔥 IMPORTANT: null start
   const [auth] = useAuth();
 
   useEffect(() => {
@@ -20,9 +20,22 @@ export default function PrivateRoute() {
         setOk(false);
       }
     };
-    if (auth?.token) authCheck();
+
+    if (auth?.token) {
+      authCheck();
+    } else {
+      setOk(false);
+    }
   }, [auth?.token]);
 
-  if (!auth?.user) return <Navigate to="/login" />; // not logged in
-  return ok ? <Outlet /> : <Spinner />;             // user verified
+  // 🔥 WAIT FOR CHECK
+  if (ok === null) return <Spinner />;
+
+  // 🔥 NOT LOGGED IN
+  if (!auth?.token) return <Navigate to="/login" />;
+
+  // 🔥 NOT AUTHORIZED
+  if (!ok) return <Navigate to="/login" />;
+
+  return <Outlet />;
 }
