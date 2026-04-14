@@ -3,7 +3,7 @@ import {
   createCategoryController,
   updateCategoryController,
   deleteCategoryController,
-  categoryControlller,
+  categoryController,
   singleCategoryController,
 } from "../controllers/categoryController.js";
 
