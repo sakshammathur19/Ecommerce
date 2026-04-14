@@ -1,13 +1,13 @@
 import categoryModel from "../models/categoryModel.js";
 import slugify from "slugify";
 
-// create category
+// CREATE CATEGORY
 export const createCategoryController = async (req, res) => {
   try {
     const { name } = req.body;
 
     if (!name) {
-      return res.status(401).send({ message: "Name is required" });
+      return res.status(400).send({ message: "Name is required" });
     }
 
     const existingCategory = await categoryModel.findOne({ name });
@@ -33,13 +33,13 @@ export const createCategoryController = async (req, res) => {
     console.log(error);
     res.status(500).send({
       success: false,
+      message: "Error in creating category",
       error,
-      message: "Error in Category",
     });
   }
 };
 
-// update category
+// UPDATE CATEGORY
 export const updateCategoryController = async (req, res) => {
   try {
     const { name } = req.body;
@@ -48,7 +48,7 @@ export const updateCategoryController = async (req, res) => {
     const category = await categoryModel.findByIdAndUpdate(
       id,
       { name, slug: slugify(name) },
-      { new: true }
+      { new: true },
     );
 
     res.status(200).send({
@@ -60,14 +60,14 @@ export const updateCategoryController = async (req, res) => {
     console.log(error);
     res.status(500).send({
       success: false,
-      error,
       message: "Error while updating category",
+      error,
     });
   }
 };
 
-// get all categories
-export const getCategoryController = async (req, res) => {
+// ✅ IMPORTANT: NAME FIXED HERE
+export const categoryController = async (req, res) => {
   try {
     const category = await categoryModel.find({});
 
@@ -80,33 +80,35 @@ export const getCategoryController = async (req, res) => {
     console.log(error);
     res.status(500).send({
       success: false,
+      message: "Error while getting categories",
       error,
-      message: "Error while getting all categories",
     });
   }
 };
 
-// single category
+// SINGLE CATEGORY
 export const singleCategoryController = async (req, res) => {
   try {
-    const category = await categoryModel.findOne({ slug: req.params.slug });
+    const category = await categoryModel.findOne({
+      slug: req.params.slug,
+    });
 
     res.status(200).send({
       success: true,
-      message: "Get Single Category Successfully",
+      message: "Single Category Fetched",
       category,
     });
   } catch (error) {
     console.log(error);
     res.status(500).send({
       success: false,
+      message: "Error while getting single category",
       error,
-      message: "Error While getting Single Category",
     });
   }
 };
 
-// delete category
+// DELETE CATEGORY
 export const deleteCategoryController = async (req, res) => {
   try {
     const { id } = req.params;
